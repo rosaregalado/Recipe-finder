@@ -71,7 +71,14 @@ function RecipeFinder() {
               <img src={`https://spoonacular.com/recipeImages/${recipe.id}-556x370.${recipe.imageType}`} alt={recipe.title} className="w-full h-56 object-cover" />
               <div className="px-4 py-2">
                 <h2 className="font-semibold text-lg text-orange-700 mb-2">{recipe.title}</h2>
-                <p className="text-gray-700 text-sm">{recipe.summary}</p>
+                {recipe.analyzedInstructions && recipe.analyzedInstructions[0].steps.map((step, index) => (
+                  <div key={index} className="text-gray-700 text-sm">
+                    <p>{step.step}</p>
+                  </div>
+                ))}
+                <div className="flex justify-end">
+                  <a href={recipe.sourceUrl} target="_blank" rel="noreferrer" className="text-orange-500 font-semibold hover:text-orange-600">View full recipe</a>
+                </div>
               </div>
             </div>
           ))}
