@@ -28,7 +28,7 @@ app.get('/recipeImage/:id', async (req, res) => {
 app.get('/recipes', (req, res) => {
   const query = req.query.query;
   const cuisine = req.query.cuisine;
-  const apiKey = process.env.SPOONACULAR_API_KEY;
+  const apiKey = process.env.SPOONACULAR_API_KEY || 'b4b8fd7f6f3e4108954c33af98f9e69a'; //key shouldn't be public in production development
   let apiUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&query=${query}&cuisine=${cuisine}&addRecipeInformation=true`;
 
   if (query) {
