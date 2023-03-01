@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 function RecipeFinder() {
   const [searchQuery, setSearchQuery] = useState('');
   const [cuisine, setCuisine] = useState('');
   const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const handleSearchInputChange = event => {
     setSearchQuery(event.target.value);
@@ -13,19 +14,25 @@ function RecipeFinder() {
     setCuisine(event.target.value);
   };
 
-  const handleFormSubmit = event => {
+  const handleFormSubmit = async event => {
     event.preventDefault();
-    let apiUrl = `https://api.spoonacular.com/recipes/search?apiKey=b4b8fd7f6f3e4108954c33af98f9e69a`;
+    setLoading(true);
+    let apiUrl = 'http://localhost:3000/recipes?';
     if (searchQuery) {
-      apiUrl += `&query=${searchQuery}`;
+      apiUrl += `query=${searchQuery}&`;
     }
     if (cuisine) {
-      apiUrl += `&cuisine=${cuisine}`;
+      apiUrl += `cuisine=${cuisine}&`;
     }
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => setRecipes(data.results))
-      .catch(error => console.log(error));
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      setRecipes(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
 
   return (
@@ -49,17 +56,19 @@ function RecipeFinder() {
         </label>
         <button type="submit">Search</button>
       </form>
-      <ul>
-        {recipes.map(recipe => (
-          <li key={recipe.id}>
+      {loading ? (
+        <p>Loading recipes...</p>
+      ) : (
+        recipes.map(recipe => (
+          <div key={recipe.id}>
             <h2>{recipe.title}</h2>
-            <img src={`https://spoonacular.com/recipeImages/${recipe.image}`} alt={recipe.title} />
+            <img src={`https://spoonacular.com/recipeImages/${recipe.id}-556x370.${recipe.imageType}`} alt={recipe.title} />
             <p>{recipe.summary}</p>
-          </li>
-        ))}
-      </ul>
+          </div>
+        ))
+      )}
     </div>
   );
 }
 
-export default RecipeFinder
+export default RecipeFinder;
